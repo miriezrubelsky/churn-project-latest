@@ -1,0 +1,12 @@
+include requirements.txt
+include README.md
+include *.py
+recursive-include churn_prediction_pipeline *.py
+recursive-include churn_prediction_pipeline/trained_model *.pickle
+recursive-include churn_prediction_pipeline/processing *.py
+recursive-include churn_prediction_pipeline/data *.py
+recursive-include churn_prediction_pipeline/logs *
+include churn_prediction_pipeline/VERSION
+include tests/*
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]

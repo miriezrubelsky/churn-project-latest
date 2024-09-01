@@ -1,0 +1,20 @@
+# Ignore Python cache and bytecode files
+__pycache__/
+*.py[cod]
+
+# Ignore virtual environment directories
+venv/
+env/
+*.egg-info/
+
+# Ignore any log files
+*.log
+
+# Ignore datasets or model files that are large and should not be included by default
+*.pickle
+
+# Ignore the .git directory
+.git/
+
+# Ignore any other unnecessary files or directories
+.DS_Store
