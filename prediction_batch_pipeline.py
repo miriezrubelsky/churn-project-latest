@@ -1,6 +1,7 @@
 # Importing Dependencies
 import sys
 import os
+import glob
 
 # Add the src directory to the system path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -22,8 +23,8 @@ from churn_prediction_pipeline.preprocessing_pipeline import preprocessing_pipel
 from churn_prediction_pipeline.predict_churn import predict_churn
 from churn_prediction_pipeline.filter_churn import filter_churn
 from prometheus_client import start_http_server, Counter, Gauge
-import threading
-import time
+# import threading
+# import time
 
 import os
 logging.basicConfig(
@@ -41,6 +42,7 @@ rows_valid = Counter('rows_valid', 'Number of valid rows')
 rows_invalid = Counter('rows_invalid', 'Number of invalid rows')
 rows_empty = Counter('rows_empty', 'Number of empty rows')
 mean_tenure_gauge = Gauge('mean_tenure', 'Mean tenure of the customers')
+
 
 
 def check_file_not_empty(count):
@@ -120,26 +122,29 @@ def format_output_row(output_churn_pred_data):
         formatted_fields.append(str(value))
     return ','.join(formatted_fields)
 
-def start_metrics_server(port=8000):
-    logger.info(f"Starting Prometheus metrics server on port {port}")
-    start_http_server(port)
-    while True:
-        time.sleep(1)  # Keep the thread alive
-     
+   
 def run(argv =None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--input")
     parser.add_argument("--output")
     args,beams_args = parser.parse_known_args(argv) 
-     # Start the Prometheus server in a separate thread
-    metrics_thread = threading.Thread(target=start_metrics_server)
-    metrics_thread.daemon = True  # Daemonize the thread to exit with the main program
-    metrics_thread.start()
+
+     # Check if the input path is a directory and if it is empty
+    if os.path.isdir(args.input):
+        # List all CSV files in the directory
+        input_files = glob.glob(os.path.join(args.input, '*.csv'))
+        if not input_files:
+            print("The input directory is empty. Please provide a directory with data files.")
+            return
+    else:
+        # If it's a file, treat it as a single input file
+        input_files = [args.input]
+  
 
     with beam.Pipeline(argv=beams_args) as pipe:
         config.headers = (
             pipe
-            | 'Read CSV' >> beam.io.ReadFromText(args.input)
+            | 'Read CSV' >> beam.io.ReadFromText(input_files[0])
             | 'Extract Header' >> beam.ParDo(ExtractHeader())
             | 'Validate Header' >> beam.Map(validate_header)
           
@@ -207,7 +212,6 @@ def run(argv =None):
               )
         )
        
-
-if __name__ == "__main__" :
   
+if __name__ == "__main__":
     run()

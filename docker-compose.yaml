@@ -10,11 +10,12 @@ services:
     volumes:
       - /mnt/c/churnproject/input-files:/code/input-files
       - /mnt/c/churnproject/output-files:/code/output-files
-    command: python prediction_batch_pipeline.py --input /code/input-files/database_input2.csv --output /code/output-files/output.csv --runner DirectRunner    
+    command: python file_watcher.py  # Run the file watcher script
     networks:
       example-network:
         ipv4_address: 172.16.238.10
-
+    stdin_open: true  # Enables stdin for interactive mode
+    tty: true 
   prometheus:
     image: prom/prometheus:latest
     restart: unless-stopped

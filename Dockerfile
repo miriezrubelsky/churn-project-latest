@@ -17,9 +17,9 @@ RUN chmod +x /code/src
 RUN pip install --no-cache-dir --upgrade -r code/src/requirements.txt
 
 # Declare the directory as a volume
-VOLUME /code/src/fast_api/trained_model
+VOLUME /code/src/churn_prediction_pipeline/trained_model
 # Declare the directory as a volume
-VOLUME /code/src/fast_api/logs
+VOLUME /code/src/churn_prediction_pipeline/logs
 
 
 
@@ -41,10 +41,13 @@ ENV PYTHONPATH "${PYTHONPATH}:/code/src"
 
 
 # Set the entry point for the container
-ENTRYPOINT ["python", "prediction_batch_pipeline.py"]
+ENTRYPOINT ["python", "file_watcher.py"]
+
+CMD ["pytest"]
 
 # Default command to provide flexibility if no arguments are passed
 CMD ["--help"]
 
-
 CMD ["--host", "0.0.0.0", "--port", "8000"]
+
+
