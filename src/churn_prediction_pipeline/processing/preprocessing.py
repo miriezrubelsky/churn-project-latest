@@ -21,12 +21,16 @@ class MapPhoneService(BaseEstimator, TransformerMixin):
         X = X.copy()
         # Map 'PhoneService' values to numeric (1 for 'Yes', 0 for 'No')
         phone_service_mapping = {'Yes': 1, 'No': 0}
-        X['PhoneService'] = X['PhoneService'].map(phone_service_mapping).fillna(0).astype(int)
+           # Apply mapping and replace None with 0 directly
+        X['PhoneService'] = X['PhoneService'].apply(lambda x: phone_service_mapping.get(x, 0) if x is not None else 0)
+
+     #   X['PhoneService'] = X['PhoneService'].map(phone_service_mapping).fillna(0).astype(int)
         return X
 
 class ImputeTenure(BaseEstimator, TransformerMixin):
     def __init__(self, tenure_mean):
-        self.tenure_mean = tenure_mean
+        self.tenure_mean = int(round(tenure_mean))
+        
     
     def fit(self, X, y=None):
         return self
