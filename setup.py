@@ -6,7 +6,7 @@ from setuptools import find_packages, setup
 
 
 # Metadata of package
-NAME = 'churn_prediction_pipeline'
+NAME = 'src/churn_prediction_pipeline'
 DESCRIPTION = 'Churn prediction batch pipeline'
 URL = 'https://github.com/miriezrubelsky/middle-project-churn'
 EMAIL = 'miriperelman@yahoo.com'
@@ -16,7 +16,7 @@ REQUIRES_PYTHON = '>=3.7.0'
 pwd = os.path.abspath(os.path.dirname(__file__))
 
 # Get the list of packages to be installed
-def list_reqs(fname='requirements.txt'):
+def list_reqs(fname='src/requirements.txt'):
     file_path = os.path.join(pwd, fname)
     print(f"Looking for requirements file at: {file_path}")  # Debugging line
     if not os.path.exists(file_path):
@@ -52,8 +52,8 @@ setup(
     url=URL,
     packages=find_packages(exclude=('tests',)),
     package_data={
-        '': ['requirements.txt'],
-        'churn_prediction_pipeline': ['VERSION']
+        '': ['src/requirements.txt'],
+        'src/churn_prediction_pipeline': ['VERSION']
     },
     install_requires=list_reqs(),
     extras_require={},
